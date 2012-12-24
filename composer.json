@@ -1,5 +1,5 @@
 {
-    "name": "lf4php/lf4php-monolog",
+    "name": "lf4php/lf4php-log4php",
     "description": "This is an lf4php binding for log4php.",
     "license": "MIT",
     "keywords": ["lf4php", "facade", "wrapper", "log4php"],
