@@ -23,6 +23,9 @@
 
 namespace lf4php\log4php;
 
+use Exception;
+use lf4php\helpers\MessageFormatter;
+use Logger;
 use PHPUnit_Framework_TestCase;
 
 /**
@@ -32,15 +35,96 @@ class Log4phpLoggerWrapperTest extends PHPUnit_Framework_TestCase
 {
     public function testGetName()
     {
-        $logger = \Logger::getLogger('foo');
+        $logger = Logger::getLogger('foo');
         $wrapper = new Log4phpLoggerWrapper($logger);
         self::assertEquals('foo', $wrapper->getName());
     }
 
     public function testGetLogger()
     {
-        $logger = \Logger::getLogger('foo');
+        $logger = Logger::getLogger('foo');
         $wrapper = new Log4phpLoggerWrapper($logger);
         self::assertSame($logger, $wrapper->getLog4PhpLogger());
+    }
+
+    public function testLogs()
+    {
+        $msg = 'Hello {{who}}!';
+        $params = array('who' => 'World');
+        $e = new Exception();
+
+        $logger = $this->getMock('Logger', array(), array(), '', false);
+        $logger
+            ->expects(self::once())
+            ->method('debug')
+            ->with(MessageFormatter::format($msg, $params), $e);
+        $logger
+            ->expects(self::once())
+            ->method('info')
+            ->with(MessageFormatter::format($msg, $params), $e);
+        $logger
+            ->expects(self::once())
+            ->method('error')
+            ->with(MessageFormatter::format($msg, $params), $e);
+        $logger
+            ->expects(self::once())
+            ->method('trace')
+            ->with(MessageFormatter::format($msg, $params), $e);
+        $logger
+            ->expects(self::once())
+            ->method('warn')
+            ->with(MessageFormatter::format($msg, $params), $e);
+
+        $wrapper = new Log4phpLoggerWrapper($logger);
+        $wrapper->debug($msg, $params, $e);
+        $wrapper->info($msg, $params, $e);
+        $wrapper->error($msg, $params, $e);
+        $wrapper->trace($msg, $params, $e);
+        $wrapper->warn($msg, $params, $e);
+    }
+
+    public function testIsEnabledMethods()
+    {
+        $booleans = array(true, false);
+
+        shuffle($booleans);
+        $warnEnabled = $booleans[0];
+        shuffle($booleans);
+        $debugEnabled = $booleans[0];
+        shuffle($booleans);
+        $errorEnabled = $booleans[0];
+        shuffle($booleans);
+        $traceEnabled = $booleans[0];
+        shuffle($booleans);
+        $infoEnabled = $booleans[0];
+
+        $logger = $this->getMock('Logger', array(), array(), '', false);
+        $logger
+            ->expects(self::once())
+            ->method('isWarnEnabled')
+            ->will(self::returnValue($warnEnabled));
+        $logger
+            ->expects(self::once())
+            ->method('isDebugEnabled')
+            ->will(self::returnValue($debugEnabled));
+        $logger
+            ->expects(self::once())
+            ->method('isTraceEnabled')
+            ->will(self::returnValue($traceEnabled));
+        $logger
+            ->expects(self::once())
+            ->method('isErrorEnabled')
+            ->will(self::returnValue($errorEnabled));
+        $logger
+            ->expects(self::once())
+            ->method('isInfoEnabled')
+            ->will(self::returnValue($infoEnabled));
+
+        $wrapper = new Log4phpLoggerWrapper($logger);
+        self::assertEquals($warnEnabled, $wrapper->isWarnEnabled());
+        self::assertEquals($errorEnabled, $wrapper->isErrorEnabled());
+        self::assertEquals($debugEnabled, $wrapper->isDebugEnabled());
+        self::assertEquals($traceEnabled, $wrapper->isTraceEnabled());
+        self::assertEquals($infoEnabled, $wrapper->isInfoEnabled());
     }
 }
