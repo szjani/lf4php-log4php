@@ -49,7 +49,7 @@ class Log4phpLoggerWrapper extends \Logger implements Logger
     /**
      * @return \Logger
      */
-    public function getLog4PhpLogger()
+    public function getLog4phpLogger()
     {
         return $this->logger;
     }

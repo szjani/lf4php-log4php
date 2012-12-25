@@ -44,7 +44,7 @@ class Log4phpLoggerWrapperTest extends PHPUnit_Framework_TestCase
     {
         $logger = Logger::getLogger('foo');
         $wrapper = new Log4phpLoggerWrapper($logger);
-        self::assertSame($logger, $wrapper->getLog4PhpLogger());
+        self::assertSame($logger, $wrapper->getLog4phpLogger());
     }
 
     public function testLogs()
