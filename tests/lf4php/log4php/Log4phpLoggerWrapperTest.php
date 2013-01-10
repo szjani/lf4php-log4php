@@ -49,8 +49,8 @@ class Log4phpLoggerWrapperTest extends PHPUnit_Framework_TestCase
 
     public function testLogs()
     {
-        $msg = 'Hello {{who}}!';
-        $params = array('who' => 'World');
+        $msg = 'Hello {}!';
+        $params = array('World');
         $e = new Exception();
 
         $logger = $this->getMock('Logger', array(), array(), '', false);
