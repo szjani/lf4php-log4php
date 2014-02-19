@@ -23,7 +23,7 @@
 
 namespace lf4php\log4php;
 
-use ArrayObject;
+use LazyMap\CallbackLazyMap;
 use lf4php\ILoggerFactory;
 use Logger;
 
@@ -33,13 +33,17 @@ use Logger;
 class Log4phpLoggerFactory implements ILoggerFactory
 {
     /**
-     * @var ArrayObject
+     * @var CallbackLazyMap
      */
     protected $map;
 
     public function __construct()
     {
-        $this->map = new ArrayObject();
+        $this->map = new CallbackLazyMap(
+            function ($name) {
+                return new Log4phpLoggerWrapper(Logger::getLogger($name));
+            }
+        );
     }
 
     /**
@@ -51,9 +55,6 @@ class Log4phpLoggerFactory implements ILoggerFactory
     public function getLogger($name)
     {
         $name = str_replace('\\', '.', trim($name, '\\'));
-        if (!array_key_exists($name, $this->map)) {
-            $this->map[$name] = new Log4phpLoggerWrapper(Logger::getLogger($name));
-        }
-        return $this->map[$name];
+        return $this->map->$name;
     }
 }
