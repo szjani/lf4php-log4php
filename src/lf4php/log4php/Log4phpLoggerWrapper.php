@@ -56,27 +56,37 @@ class Log4phpLoggerWrapper extends \Logger implements Logger
 
     public function debug($format, $params = array(), Exception $e = null)
     {
-        $this->logger->debug(MessageFormatter::format($format, $params), $e);
+        if ($this->isDebugEnabled()) {
+            $this->logger->debug(MessageFormatter::format($format, $params), $e);
+        }
     }
 
     public function error($format, $params = array(), Exception $e = null)
     {
-        $this->logger->error(MessageFormatter::format($format, $params), $e);
+        if ($this->isErrorEnabled()) {
+            $this->logger->error(MessageFormatter::format($format, $params), $e);
+        }
     }
 
     public function info($format, $params = array(), Exception $e = null)
     {
-        $this->logger->info(MessageFormatter::format($format, $params), $e);
+        if ($this->isInfoEnabled()) {
+            $this->logger->info(MessageFormatter::format($format, $params), $e);
+        }
     }
 
     public function trace($format, $params = array(), Exception $e = null)
     {
-        $this->logger->trace(MessageFormatter::format($format, $params), $e);
+        if ($this->isTraceEnabled()) {
+            $this->logger->trace(MessageFormatter::format($format, $params), $e);
+        }
     }
 
     public function warn($format, $params = array(), Exception $e = null)
     {
-        $this->logger->warn(MessageFormatter::format($format, $params), $e);
+        if ($this->isWarnEnabled()) {
+            $this->logger->warn(MessageFormatter::format($format, $params), $e);
+        }
     }
 
     public function isDebugEnabled()

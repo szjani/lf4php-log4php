@@ -48,7 +48,7 @@ Logger::configure(
 );
 
 $logger = LoggerFactory::getLogger('foo\bar');
-$logger->info('Hello {{who}}!', array('who' => 'World'));
+$logger->info('Hello {}!', array('World'));
 $logger->error(new Exception());
 Test::run();
 

@@ -74,6 +74,26 @@ class Log4phpLoggerWrapperTest extends PHPUnit_Framework_TestCase
             ->expects(self::once())
             ->method('warn')
             ->with(MessageFormatter::format($msg, $params), $e);
+        $logger
+            ->expects(self::once())
+            ->method('isDebugEnabled')
+            ->will(self::returnValue(true));
+        $logger
+            ->expects(self::once())
+            ->method('isInfoEnabled')
+            ->will(self::returnValue(true));
+        $logger
+            ->expects(self::once())
+            ->method('isErrorEnabled')
+            ->will(self::returnValue(true));
+        $logger
+            ->expects(self::once())
+            ->method('isTraceEnabled')
+            ->will(self::returnValue(true));
+        $logger
+            ->expects(self::once())
+            ->method('isWarnEnabled')
+            ->will(self::returnValue(true));
 
         $wrapper = new Log4phpLoggerWrapper($logger);
         $wrapper->debug($msg, $params, $e);
@@ -126,5 +146,22 @@ class Log4phpLoggerWrapperTest extends PHPUnit_Framework_TestCase
         self::assertEquals($debugEnabled, $wrapper->isDebugEnabled());
         self::assertEquals($traceEnabled, $wrapper->isTraceEnabled());
         self::assertEquals($infoEnabled, $wrapper->isInfoEnabled());
+    }
+
+    /**
+     * @test
+     */
+    public function noLogIfDisabled()
+    {
+        $logger = $this->getMock('Logger', array(), array(), '', false);
+        $logger
+            ->expects(self::never())
+            ->method('debug');
+        $logger
+            ->expects(self::once())
+            ->method('isDebugEnabled')
+            ->will(self::returnValue(false));
+        $wrapper = new Log4phpLoggerWrapper($logger);
+        $wrapper->debug('no');
     }
 }
