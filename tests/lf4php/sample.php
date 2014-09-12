@@ -25,6 +25,7 @@ require_once __DIR__ . '/../bootstrap.php';
 
 use lf4php\log4php\Log4phpLoggerFactory;
 use lf4php\LoggerFactory;
+use lf4php\MDC;
 
 $iLoggerFactory = new Log4phpLoggerFactory();
 LoggerFactory::setILoggerFactory($iLoggerFactory);
@@ -39,7 +40,7 @@ Logger::configure(
                 'layout' => array(
                     'class' => 'LoggerLayoutPattern',
                     'params' => array(
-                        'conversionPattern' => '%date %p %logger{20} %l %message%newline%ex'
+                        'conversionPattern' => '%date %p [%mdc{IP}] %logger{20} %l %message%newline%ex'
                     )
                 )
             )
@@ -48,6 +49,7 @@ Logger::configure(
 );
 
 $logger = LoggerFactory::getLogger('foo\bar');
+MDC::put('IP', '127.0.0.1');
 $logger->info('Hello {}!', array('World'));
 $logger->error(new Exception());
 Test::run();
