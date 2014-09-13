@@ -23,12 +23,9 @@
 
 require_once __DIR__ . '/../bootstrap.php';
 
-use lf4php\log4php\Log4phpLoggerFactory;
 use lf4php\LoggerFactory;
 use lf4php\MDC;
 
-$iLoggerFactory = new Log4phpLoggerFactory();
-LoggerFactory::setILoggerFactory($iLoggerFactory);
 Logger::configure(
     array(
         'rootLogger' => array(

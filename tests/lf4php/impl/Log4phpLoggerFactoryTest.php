@@ -21,40 +21,21 @@
  * SOFTWARE.
  */
 
-namespace lf4php\log4php;
+namespace lf4php\impl;
 
-use LazyMap\CallbackLazyMap;
-use lf4php\ILoggerFactory;
-use Logger;
+use lf4php\LoggerFactory;
+use PHPUnit_Framework_TestCase;
 
 /**
  * @author Szurovecz János <szjani@szjani.hu>
  */
-class Log4phpLoggerFactory implements ILoggerFactory
+class Log4phpLoggerFactoryTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @var CallbackLazyMap
-     */
-    protected $map;
-
-    public function __construct()
+    public function testGetLogger()
     {
-        $this->map = new CallbackLazyMap(
-            function ($name) {
-                return new Log4phpLoggerWrapper(Logger::getLogger($name));
-            }
-        );
-    }
-
-    /**
-     * $name can be an FQCN, it follows log4php parent-child conventions.
-     *
-     * @param string $name
-     * @return \lf4php\Logger
-     */
-    public function getLogger($name)
-    {
-        $name = str_replace('\\', '.', trim($name, '\\'));
-        return $this->map->$name;
+        $fooBar1Logger = LoggerFactory::getLogger('foo\bar');
+        $fooBar2Logger = LoggerFactory::getLogger('foo.bar');
+        self::assertSame($fooBar1Logger, $fooBar2Logger);
+        self::assertEquals('foo.bar', $fooBar1Logger->getLog4PhpLogger()->getName());
     }
 }

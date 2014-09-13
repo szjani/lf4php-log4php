@@ -21,7 +21,7 @@
  * SOFTWARE.
  */
 
-namespace lf4php\log4php;
+namespace lf4php\impl;
 
 use Exception;
 use lf4php\helpers\MessageFormatter;
@@ -36,14 +36,14 @@ class Log4phpLoggerWrapperTest extends PHPUnit_Framework_TestCase
     public function testGetName()
     {
         $logger = Logger::getLogger('foo');
-        $wrapper = new Log4phpLoggerWrapper($logger);
+        $wrapper = new Log4phpLoggerAdapter($logger);
         self::assertEquals('foo', $wrapper->getName());
     }
 
     public function testGetLogger()
     {
         $logger = Logger::getLogger('foo');
-        $wrapper = new Log4phpLoggerWrapper($logger);
+        $wrapper = new Log4phpLoggerAdapter($logger);
         self::assertSame($logger, $wrapper->getLog4phpLogger());
     }
 
@@ -95,7 +95,7 @@ class Log4phpLoggerWrapperTest extends PHPUnit_Framework_TestCase
             ->method('isWarnEnabled')
             ->will(self::returnValue(true));
 
-        $wrapper = new Log4phpLoggerWrapper($logger);
+        $wrapper = new Log4phpLoggerAdapter($logger);
         $wrapper->debug($msg, $params, $e);
         $wrapper->info($msg, $params, $e);
         $wrapper->error($msg, $params, $e);
@@ -140,7 +140,7 @@ class Log4phpLoggerWrapperTest extends PHPUnit_Framework_TestCase
             ->method('isInfoEnabled')
             ->will(self::returnValue($infoEnabled));
 
-        $wrapper = new Log4phpLoggerWrapper($logger);
+        $wrapper = new Log4phpLoggerAdapter($logger);
         self::assertEquals($warnEnabled, $wrapper->isWarnEnabled());
         self::assertEquals($errorEnabled, $wrapper->isErrorEnabled());
         self::assertEquals($debugEnabled, $wrapper->isDebugEnabled());
@@ -161,7 +161,7 @@ class Log4phpLoggerWrapperTest extends PHPUnit_Framework_TestCase
             ->expects(self::once())
             ->method('isDebugEnabled')
             ->will(self::returnValue(false));
-        $wrapper = new Log4phpLoggerWrapper($logger);
+        $wrapper = new Log4phpLoggerAdapter($logger);
         $wrapper->debug('no');
     }
 }

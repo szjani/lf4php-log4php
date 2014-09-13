@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2012 Szurovecz János
+ * Copyright (c) 2014 Szurovecz János
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -21,22 +21,36 @@
  * SOFTWARE.
  */
 
-namespace lf4php\log4php;
 
-use lf4php\LoggerFactory;
-use PHPUnit_Framework_TestCase;
+namespace lf4php\impl;
 
 /**
- * @author Szurovecz János <szjani@szjani.hu>
+ * StaticLoggerBinder for log4php.
+ *
+ * @package lf4php\impl
+ * @author Janos Szurovecz <szjani@szjani.hu>
  */
-class Log4phpLoggerFactoryTest extends PHPUnit_Framework_TestCase
+final class StaticLoggerBinder
 {
-    public function testGetLogger()
+    /**
+     * @var StaticLoggerBinder
+     */
+    public static $SINGLETON;
+
+    private $loggerFactory;
+
+    public static function init()
     {
-        LoggerFactory::setILoggerFactory(new Log4phpLoggerFactory());
-        $fooBar1Logger = LoggerFactory::getLogger('foo\bar');
-        $fooBar2Logger = LoggerFactory::getLogger('foo.bar');
-        self::assertSame($fooBar1Logger, $fooBar2Logger);
-        self::assertEquals('foo.bar', $fooBar1Logger->getLog4PhpLogger()->getName());
+        self::$SINGLETON = new StaticLoggerBinder();
+        self::$SINGLETON->loggerFactory = new Log4phpLoggerFactory();
+    }
+
+    /**
+     * @return Log4phpLoggerFactory
+     */
+    public function getLoggerFactory()
+    {
+        return $this->loggerFactory;
     }
 }
+StaticLoggerBinder::init();

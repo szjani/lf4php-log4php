@@ -21,7 +21,7 @@
  * SOFTWARE.
  */
 
-namespace lf4php\log4php;
+namespace lf4php\impl;
 
 use Exception;
 use lf4php\helpers\MessageFormatter;
@@ -32,7 +32,7 @@ use lf4php\Logger;
  *
  * @author Szurovecz János <szjani@szjani.hu>
  */
-class Log4phpLoggerWrapper extends \Logger implements Logger
+class Log4phpLoggerAdapter extends \Logger implements Logger
 {
     private $logger;
 
