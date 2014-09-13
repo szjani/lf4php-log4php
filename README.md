@@ -6,13 +6,14 @@ This is a log4php binding for lf4php.
 Using lf4php-log4php
 --------------------
 
-### Configuration
+### Log4php configuration
 
 ```php
 <?php
 Logger::configure('config.xml');
-LoggerFactory::setILoggerFactory(new Log4phpLoggerFactory());
 ```
+
+lf4php will work properly without any configuration steps. 
 
 ### Logging
 
@@ -26,6 +27,10 @@ $logger->error(new \Exception());
 
 History
 -------
+
+### 2.1
+
+MDC support.
 
 ### 2.0
 
