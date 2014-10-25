@@ -33,15 +33,21 @@ use Logger;
 class Log4phpLoggerFactory implements ILoggerFactory
 {
     /**
+     * Should not be used directly. It is public due to PHP 5.3 compatibility.
+     *
      * @var CallbackLazyMap
      */
-    protected $map;
+    public $map;
 
     public function __construct()
     {
+        $self = $this;
         $this->map = new CallbackLazyMap(
-            function ($name) {
-                return new Log4phpLoggerAdapter(Logger::getLogger($name));
+            function ($name) use ($self) {
+                $filteredName = str_replace('\\', '.', trim($name, '\\'));
+                return $filteredName === $name
+                    ? new Log4phpLoggerAdapter(Logger::getLogger($name))
+                    : $self->map->$filteredName;
             }
         );
     }
@@ -54,7 +60,6 @@ class Log4phpLoggerFactory implements ILoggerFactory
      */
     public function getLogger($name)
     {
-        $name = str_replace('\\', '.', trim($name, '\\'));
         return $this->map->$name;
     }
 }

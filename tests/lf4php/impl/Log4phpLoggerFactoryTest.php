@@ -33,7 +33,7 @@ class Log4phpLoggerFactoryTest extends PHPUnit_Framework_TestCase
 {
     public function testGetLogger()
     {
-        $fooBar1Logger = LoggerFactory::getLogger('foo\bar');
+        $fooBar1Logger = LoggerFactory::getLogger('\foo\bar');
         $fooBar2Logger = LoggerFactory::getLogger('foo.bar');
         self::assertSame($fooBar1Logger, $fooBar2Logger);
         self::assertEquals('foo.bar', $fooBar1Logger->getLog4PhpLogger()->getName());
