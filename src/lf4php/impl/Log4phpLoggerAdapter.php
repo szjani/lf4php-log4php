@@ -26,6 +26,7 @@ namespace lf4php\impl;
 use Exception;
 use lf4php\helpers\MessageFormatter;
 use lf4php\Logger;
+use LoggerLevel;
 
 /**
  * Extends log4php Logger class for proper location logging.
@@ -34,11 +35,43 @@ use lf4php\Logger;
  */
 class Log4phpLoggerAdapter extends \Logger implements Logger
 {
+    private static $defaultLogFunction;
+    private static $emptyLogFunction;
+
     private $logger;
+    private $debugFunction;
+    private $errorFunction;
+    private $infoFunction;
+    private $traceFunction;
+    private $warnFunction;
+
+    public static function init()
+    {
+        self::$defaultLogFunction = function(LoggerLevel $level, Log4phpLoggerAdapter $adapter, $format, $params = array(), Exception $e = null) {
+            $adapter->logger->log($level, MessageFormatter::format($format, $params), $e);
+        };
+        self::$emptyLogFunction = function () {};
+    }
 
     public function __construct(\Logger $logger)
     {
         $this->logger = $logger;
+
+        $this->debugFunction = $logger->isDebugEnabled()
+            ? self::$defaultLogFunction
+            : self::$emptyLogFunction;
+        $this->infoFunction = $logger->isInfoEnabled()
+            ? self::$defaultLogFunction
+            : self::$emptyLogFunction;
+        $this->errorFunction = $logger->isErrorEnabled()
+            ? self::$defaultLogFunction
+            : self::$emptyLogFunction;
+        $this->traceFunction = $logger->isTraceEnabled()
+            ? self::$defaultLogFunction
+            : self::$emptyLogFunction;
+        $this->warnFunction = $logger->isWarnEnabled()
+            ? self::$defaultLogFunction
+            : self::$emptyLogFunction;
     }
 
     public function getName()
@@ -56,37 +89,27 @@ class Log4phpLoggerAdapter extends \Logger implements Logger
 
     public function debug($format, $params = array(), Exception $e = null)
     {
-        if ($this->isDebugEnabled()) {
-            $this->logger->debug(MessageFormatter::format($format, $params), $e);
-        }
+        call_user_func($this->debugFunction, LoggerLevel::getLevelDebug(), $this, $format, $params, $e);
     }
 
     public function error($format, $params = array(), Exception $e = null)
     {
-        if ($this->isErrorEnabled()) {
-            $this->logger->error(MessageFormatter::format($format, $params), $e);
-        }
+        call_user_func($this->errorFunction, LoggerLevel::getLevelError(), $this, $format, $params, $e);
     }
 
     public function info($format, $params = array(), Exception $e = null)
     {
-        if ($this->isInfoEnabled()) {
-            $this->logger->info(MessageFormatter::format($format, $params), $e);
-        }
+        call_user_func($this->infoFunction, LoggerLevel::getLevelInfo(), $this, $format, $params, $e);
     }
 
     public function trace($format, $params = array(), Exception $e = null)
     {
-        if ($this->isTraceEnabled()) {
-            $this->logger->trace(MessageFormatter::format($format, $params), $e);
-        }
+        call_user_func($this->traceFunction, LoggerLevel::getLevelTrace(), $this, $format, $params, $e);
     }
 
     public function warn($format, $params = array(), Exception $e = null)
     {
-        if ($this->isWarnEnabled()) {
-            $this->logger->warn(MessageFormatter::format($format, $params), $e);
-        }
+        call_user_func($this->warnFunction, LoggerLevel::getLevelWarn(), $this, $format, $params, $e);
     }
 
     public function isDebugEnabled()
@@ -114,3 +137,4 @@ class Log4phpLoggerAdapter extends \Logger implements Logger
         return $this->logger->isWarnEnabled();
     }
 }
+Log4phpLoggerAdapter::init();
