@@ -1,25 +1,5 @@
 <?php
-/*
- * Copyright (c) 2012 Janos Szurovecz
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- * of the Software, and to permit persons to whom the Software is furnished to do
- * so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
+declare(strict_types=1);
 
 namespace lf4php\impl;
 
@@ -28,12 +8,12 @@ use lf4php\helpers\MessageFormatter;
 use Logger;
 use LoggerLevel;
 use Mockery;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Janos Szurovecz <szjani@szjani.hu>
  */
-class Log4phpLoggerAdapterTest extends PHPUnit_Framework_TestCase
+class Log4phpLoggerAdapterTest extends TestCase
 {
     protected function tearDown()
     {
@@ -109,6 +89,7 @@ class Log4phpLoggerAdapterTest extends PHPUnit_Framework_TestCase
         $wrapper->error($msg, $params, $e);
         $wrapper->trace($msg, $params, $e);
         $wrapper->warn($msg, $params, $e);
+        self::assertTrue(true);
     }
 
     public function testIsEnabledMethods()
@@ -161,7 +142,9 @@ class Log4phpLoggerAdapterTest extends PHPUnit_Framework_TestCase
      */
     public function noLogIfDisabled()
     {
-        $logger = $this->getMock('Logger', array(), array(), '', false);
+        $logger = $this->getMockBuilder('Logger')
+            ->setConstructorArgs([''])
+            ->getMock();
         $logger
             ->expects(self::never())
             ->method('debug');

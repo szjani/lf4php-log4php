@@ -1,25 +1,5 @@
 <?php
-/*
- * Copyright (c) 2012 Janos Szurovecz
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- * of the Software, and to permit persons to whom the Software is furnished to do
- * so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
+declare(strict_types=1);
 
 namespace lf4php\impl;
 
@@ -45,7 +25,7 @@ class Log4phpLoggerAdapter extends \Logger implements Logger
     private $traceFunction;
     private $warnFunction;
 
-    public static function init()
+    public static function init() : void
     {
         self::$defaultLogFunction = function(LoggerLevel $level, Log4phpLoggerAdapter $adapter, $format, $params = array(), Exception $e = null) {
             $adapter->logger->log($level, MessageFormatter::format($format, $params), $e);
@@ -74,7 +54,7 @@ class Log4phpLoggerAdapter extends \Logger implements Logger
             : self::$emptyLogFunction;
     }
 
-    public function getName()
+    public function getName() : string
     {
         return $this->logger->getName();
     }
@@ -82,7 +62,7 @@ class Log4phpLoggerAdapter extends \Logger implements Logger
     /**
      * @return \Logger
      */
-    public function getLog4phpLogger()
+    public function getLog4phpLogger() : \Logger
     {
         return $this->logger;
     }
@@ -112,27 +92,27 @@ class Log4phpLoggerAdapter extends \Logger implements Logger
         call_user_func($this->warnFunction, LoggerLevel::getLevelWarn(), $this, $format, $params, $e);
     }
 
-    public function isDebugEnabled()
+    public function isDebugEnabled() : bool
     {
         return $this->logger->isDebugEnabled();
     }
 
-    public function isErrorEnabled()
+    public function isErrorEnabled() : bool
     {
         return $this->logger->isErrorEnabled();
     }
 
-    public function isInfoEnabled()
+    public function isInfoEnabled() : bool
     {
         return $this->logger->isInfoEnabled();
     }
 
-    public function isTraceEnabled()
+    public function isTraceEnabled() : bool
     {
         return $this->logger->isTraceEnabled();
     }
 
-    public function isWarnEnabled()
+    public function isWarnEnabled() : bool
     {
         return $this->logger->isWarnEnabled();
     }
